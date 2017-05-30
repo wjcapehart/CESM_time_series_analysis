@@ -1048,7 +1048,7 @@ distance = gc_latlon(loc_lat(statid),loc_lon(statid),cesm_lat,cesm_lon,1,4)
    fout->lon = cesm_lon
    fout->lat =cesm_lat
    fout->alt = cesm_topo
-   fout->station_id =station_id
+   fout->station_name =station_name
 
   fout->flds         = flds
   fout->fsds         = fsds

@@ -143,11 +143,7 @@ formal_name = (/ "Fort Peck, MT",  \
                  loc_lon       := (/   -96.399489 /)+ 360.0 ; deg east
                  directory := loc_string
 
-                                  formal_name    := (/ "Osage Nation, OK" /)
 
-                                  loc_string    := (/  "Osage_Nation"   /)
-                                  loc_lat       := (/   36.629958 /); deg north
-                                  loc_lon       := (/   -96.399489 /)+ 360.0 ; deg east
 
    filepref  = directory
 
@@ -184,7 +180,7 @@ formal_name = (/ "Fort Peck, MT",  \
 
 
       print("processing "+filename)
-      print("/usr/local/netcdf/bin/nccopy -4 -d 9 -u -s "+filename + " deleteme.nc4")
+      print( "/usr/local/netcdf/bin/nccopy -4 -d 9 -u -s "+filename + " deleteme.nc4")
       system("/usr/local/netcdf/bin/nccopy -4 -d 9 -u -s "+filename + " deleteme.nc4")
       if (isfilepresent("deleteme.nc4")) then
          print("mv -v  deleteme.nc4 " + filename)

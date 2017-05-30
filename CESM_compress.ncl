@@ -152,8 +152,8 @@ formal_name = (/ "Fort Peck, MT",  \
    filepref  = directory
 
 
-   rcp       = (/ ".b.e11.BRCP45C5CNBDRD.f09_g16.nc4", \
-                  ".b.e11.BRCP85C5CNBDRD.f09_g16.nc4"  /)
+   rcp       = (/ ".b.e11.BRCP45C5CNBDRD.f09_g16.nc", \
+                  ".b.e11.BRCP85C5CNBDRD.f09_g16.nc"  /)
   rcp2       = (/ ".b.e11.BRCP45C5CNBDRD.f09_g16", \
                   ".b.e11.BRCP85C5CNBDRD.f09_g16"  /)
 

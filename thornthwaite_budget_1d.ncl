@@ -1,6 +1,5 @@
 
 
-
 undef("thornthwaite_budget_1d")
 
 procedure thornthwaite_budget_1d(lat:numeric,        \  ; degrees

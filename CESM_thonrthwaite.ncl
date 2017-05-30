@@ -1,9 +1,7 @@
 load "./thornthwaite_budget_1d.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
 
-
-
-
+`
 
 begin
 

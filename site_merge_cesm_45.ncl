@@ -9,9 +9,6 @@ begin
        setfileoption("nc", "CompressionLevel" , 5 )
 
 
-
-
-
 loc_string = (/ "Fort_Peck",  \
                 "Blackfeet",  \
                 "Cherokee_Nation",  \

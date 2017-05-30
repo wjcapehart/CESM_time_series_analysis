@@ -162,6 +162,7 @@ formal_name    = (/ "Fort Peck, MT",  \
                  formal_name    := (/ "Osage Nation, OK" /)
 
                  loc_string    := (/  "Osage_Nation"   /)
+                 directory    := (/  "Osage_Nation"   /)
                  loc_lat       := (/   36.629958 /); deg north
                  loc_lon       := (/   -96.399489 /)+ 360.0 ; deg east
 

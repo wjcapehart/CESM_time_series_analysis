@@ -170,8 +170,8 @@ formal_name    = (/ "Fort Peck, MT",  \
    filepref  = directory
 
 
-   rcp       = (/ ".b.e11.BRCP45C5CNBDRD.f09_g16.nc", \
-                  ".b.e11.BRCP85C5CNBDRD.f09_g16.nc"  /)
+   rcp       = (/ ".b.e11.BRCP45C5CNBDRD.f09_g16.nc4", \
+                  ".b.e11.BRCP85C5CNBDRD.f09_g16.nc4"  /)
   rcp2       = (/ ".b.e11.BRCP45C5CNBDRD.f09_g16", \
                   ".b.e11.BRCP85C5CNBDRD.f09_g16"  /)
 
@@ -182,12 +182,14 @@ formal_name    = (/ "Fort Peck, MT",  \
 
 
 
-   do s = 62, n_loc-1
+   do s = 0, n_loc-1
    do r = 0, n_rcp-1
 
       filename  = "./" + directory(s) + "/" \
                        + filepref(s)        \
                        + rcp(r)
+
+   print(filename)
 
 if (isfilepresent(filename)) then
 
@@ -525,6 +527,5 @@ end if
 
    end do
    end do
-print(time_attributes)
 
 end

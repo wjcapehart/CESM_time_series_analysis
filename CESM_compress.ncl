@@ -184,8 +184,8 @@ formal_name = (/ "Fort Peck, MT",  \
 
 
       print("processing "+filename)
-      print("/usr/local/netcdf/bin/nccopy -k 3 -d 9 -u -s "+filename + " deleteme.nc4")
-      system("/usr/local/netcdf/bin/nccopy -k 3 -d 9 -u -s "+filename + " deleteme.nc4")
+      print("/usr/local/netcdf/bin/nccopy -4 -d 9 -u -s "+filename + " deleteme.nc4")
+      system("/usr/local/netcdf/bin/nccopy -4 -d 9 -u -s "+filename + " deleteme.nc4")
       if (isfilepresent("deleteme.nc4")) then
          print("mv -v  deleteme.nc4 " + filename)
          system("mv -v  deleteme.nc4 " + filename)

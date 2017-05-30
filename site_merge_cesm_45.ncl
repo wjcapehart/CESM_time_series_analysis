@@ -263,7 +263,6 @@ loc_lon       = (/ -105.538924658,  \
 
 
 formal_name    := (/ "Osage Nation, OK" /)
-
 loc_string    := (/  "Osage_Nation"   /)
 loc_lat       := (/   36.629958 /); deg north
 loc_lon       := (/   -96.399489 /)+ 360.0 ; deg east
@@ -345,6 +344,34 @@ do tf = 0,n_timefiles-1
      cesm_lon = f->lon({loc_lon(statid)})
      cesm_lat = f->lat({loc_lat(statid)})
      cesm_topo = f->topo({loc_lat(statid)},{loc_lon(statid)})
+
+     cesm_lon!0           = "ncl_scalar"
+     cesm_lon@description = "cesm longitude"
+     cesm_lon@long_name  = "cesm longitude"
+     cesm_lon@standard_name  = "longitude"
+     cesm_lon@units  = "degrees_east"
+
+     cesm_lat!0           = "ncl_scalar"
+     cesm_lat@description = "cesm latitude"
+     cesm_lat@long_name  = "cesm latitude"
+     cesm_lat@standard_name  = "latitude"
+     cesm_lat@units  = "degrees_north"
+
+     station_name=formal_name(statid)
+     station_name!0           = "ncl_scalar"
+     station_name@long_name   = "station name"
+     station_name@description = "station name"
+     station_name@cf_role     = "timeseries_id"
+
+
+     cesm_topo!0           = "ncl_scalar"
+     cesm_topo@description = "cesm elevation"
+     cesm_topo@long_name  = "cesm elevation"
+     cesm_topo@standard_name  = "height"
+     cesm_topo@units  = "m"
+
+
+
      print(cesm_lat)
      print(cesm_lon)
      print(cesm_topo)
@@ -440,63 +467,74 @@ temperature@station_id = loc_string(statid)
 temperature@cell_methods = "time:mean"
 temperature!1 = "time"
 temperature!0 = "ensemble_member"
+temperature@coordinates   = "time lat lon" ;
 
 wind = temperature
 wind@long_name = "Wind Speed"
 wind@units     = "m s-1"
+wind@coordinates   = "time lat lon" ;
 
 rain = temperature
 rain@long_name = "Liquid Precip"
 rain@units     = "kg m-2"
 rain@cell_methods = "time:sum"
+rain@coordinates   = "time lat lon" ;
 
 snow = temperature
 snow@long_name = "Frozen Precip"
 snow@units     = "kg m-2"
 snow@cell_methods = "time:sum"
+snow@coordinates   = "time lat lon" ;
 
 
 precip = rain
 precip@long_name = "Total Precip"
 precip@units     = "kg m-2"
 precip@cell_methods = "time:sum"
+precip@coordinates   = "time lat lon" ;
 
 
 flds = temperature
 flds@long_name = "Incident IR Radiation"
 flds@units     = "MJ m-2"
 flds@cell_methods = "time:sum"
+flds@coordinates   = "time lat lon" ;
 
 
 fsds = temperature
 fsds@long_name = "Incident Solar Radiation"
 fsds@units     = "MJ m-2"
 fsds@cell_methods = "time:sum"
+fsds@coordinates   = "time lat lon" ;
 
 
 q2m = temperature
 q2m@long_name = "2-m Mixing Ratio"
 q2m@units     = "kg3 kg-3"
+q2m@coordinates   = "time lat lon" ;
 
 
 
 zwt = temperature
 zwt@long_name = " Water Table Depth"
 zwt@units     = "m"
-
+zwt@coordinates   = "time lat lon" ;
 
 soilw = temperature
 soilw@long_name = zsoil_string+" Soil Water"
 soilw@units     = "kg m-2"
+soilw@coordinates   = "time lat lon" ;
 
 
 firelength = temperature
 firelength@long_name = "Fire Season Length"
 firelength@units     = "days"
+firelength@coordinates   = "time lat lon" ;
 
 firearea = temperature
 firearea@long_name = "Fire Area Burned"
 firearea@units     = "grid fraction"
+firearea@coordinates   = "time lat lon" ;
 
 
 
@@ -559,6 +597,7 @@ do tf = 0,n_timefiles-1
     flds(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
     flds@cesm_lon = tsa@lon
     flds@cesm_lat = tsa@lat
+    flds@coordinates   = "time lat lon" ;
 
 
     filename = dir + "/"+"Q2M"+"/"+part1(tf)+part2(ef)+".clm2.h0."+"Q2M"+string_year
@@ -574,6 +613,7 @@ do tf = 0,n_timefiles-1
     q2m(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
     q2m@cesm_lon = tsa@lon
     q2m@cesm_lat = tsa@lat
+    q2m@coordinates   = "time lat lon" ;
 
 
 
@@ -1005,6 +1045,10 @@ distance = gc_latlon(loc_lat(statid),loc_lon(statid),cesm_lat,cesm_lon,1,4)
   fout->ensemble_member = ensemble_member
    fout->saturation_soil_water_content = thetas
    fout->soil_layer_thickness = dzsoil
+   fout->lon = cesm_lon
+   fout->lat =cesm_lat
+   fout->alt = cesm_topo
+   fout->station_id =station_id
 
   fout->flds         = flds
   fout->fsds         = fsds

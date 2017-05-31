@@ -1053,7 +1053,6 @@ distance = gc_latlon(loc_lat(statid),loc_lon(statid),cesm_lat,cesm_lon,1,4)
   fout->time_year  = time_year
   fout->ensemble_member = ensemble_member
    fout->saturation_soil_water_content = thetas
-   fout->soil_layer_thickness = dzsoil
 
   fout->flds         = flds
   fout->fsds         = fsds

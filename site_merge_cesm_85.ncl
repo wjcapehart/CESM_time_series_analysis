@@ -4,12 +4,12 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
 begin
 
 
-       setfileoption("nc", "Format" , "NetCDF4" )
-       setfileoption("nc", "FileStructure" , "Advanced" )
-       setfileoption("nc", "CompressionLevel" , 5 )
+       setfileoption("nc", "Format",           "NetCDF4" )
+       setfileoption("nc", "FileStructure",   "Advanced" )
+       setfileoption("nc", "CompressionLevel",         5 )
 
 
-
+rcp =  "RCP85"
 
 
 loc_string = (/ "Fort_Peck",  \
@@ -72,7 +72,8 @@ loc_string = (/ "Fort_Peck",  \
 "Old_Harbor",  \
 "Wind_River",  \
 "Winnebago",  \
-"Yankton" /)
+"Yankton", \
+"Osage_Nation" /)
 
 
 formal_name    = (/ "Fort Peck, MT",  \
@@ -135,7 +136,8 @@ formal_name    = (/ "Fort Peck, MT",  \
 "Old Harbor, AK",  \
 "Wind River, WY",  \
 "Winnebago, NE",  \
-"Yankton, SD" /)
+"Yankton, SD", \
+"Osage Nation, OK" /)
 
 
 
@@ -199,7 +201,8 @@ loc_lat = (/ 48.363611333,  \
 57.201979515,  \
 43.279762382,  \
 42.225366699,  \
-43.110190799 /)
+43.110190799,  \
+ 36.629958 /)
 
 
 loc_lon       = (/ -105.538924658,  \
@@ -262,49 +265,156 @@ loc_lon       = (/ -105.538924658,  \
 -153.306087047,  \
 -108.815597023,  \
 -96.598593205,  \
--98.376292766 /) + 360.0 ; deg east
+-98.376292766, \
+-96.399489  /) + 360.0 ; deg east
 
-formal_name    := (/ "Osage Nation, OK" /)
+formal_name    := (/ "Darwin, NT, AUS",            \
+                     "Papeete, Tahiti, PYF",       \
+                     "Ponta Delgada, Azores, PRT", \
+                     "Reykjavík, ISL", \
+                     "SD01",  \
+                     "SD02",  \
+                     "SD03",  \
+                     "SD04",  \
+                     "SD05",  \
+                     "SD06",  \
+                     "SD07",  \
+                     "SD08",  \
+                     "SD09"  \
+                      /)
 
-loc_string    := (/  "Osage_Nation"   /)
-loc_lat       := (/   36.629958 /); deg north
-loc_lon       := (/   -96.399489 /)+ 360.0 ; deg east
+loc_string    := (/  "YPDN",  \
+                     "NTAA",  \
+                     "LPPD",  \
+                     "BIKF",   \
+                     "SD01",  \
+                     "SD02",  \
+                     "SD03",  \
+                     "SD04",  \
+                     "SD05",  \
+                     "SD06",  \
+                     "SD07",  \
+                     "SD08",  \
+                     "SD09"  \
+            /)
+
+loc_lat       := (/   -12.415779, \
+                      -17.556666, \
+                       37.741184, \
+                       63.985000,  \
+                       45.25406, \
+                       45.47139, \
+                       45.45994, \
+                       43.92326, \
+                       43.73841, \
+                       44.34274, \
+                       44.50063, \
+                       43.35578, \
+                       43.41789 \
+                       /); deg north
+
+loc_lon       := (/   130.879865, \
+                      210.38861,  \
+                      334.30213,  \
+                      337.39445, \
+                      257.2413,    \
+                      259.719, \
+                      262.1566, \
+                      256.3355, \
+                      257.5146, \
+                      259.7704, \
+                      262.2293, \
+                      259.618, \
+                      262.2756  \
+                         /) ; deg east
 
 loc_lat@units = "degrees_north"
 loc_lon@units = "degrees_east"
 depestlayer    = 7
 loc_lon = where(loc_lon .lt.0, loc_lon+360.0 , loc_lon)
+dir   =  "/projects/ECEP/CESM_Ensembles/CESM_LES_MES_ORIGINAL_OUTPUT/"
 
-nens = 30
 
 do statid = 0, dimsizes(loc_string)-1
 
 system("mkdir  ./"+loc_string(statid))
 
 
-;                                  b.e11.BRCP85C5CNBDRD.f09_g16.
-part1 = (/ "b.e11.B20TRC5CNBDRD.f09_g16.", "b.e11.BRCP85C5CNBDRD.f09_g16.", "b.e11.BRCP85C5CNBDRD.f09_g16." /)
-part2 = sprinti("%0.3i", ispan(1,nens,1))
-part3 = ".clm2.h0."
-part5 = (/ ".192001-200512.nc",".200601-208012.nc",".208101-210012.nc"  /)
 
 
-ensemble_member = ispan(1,nens,1)
-ensemble_member!0 = "ensemble_member"
-ensemble_member&ensemble_member= ispan(1,nens,1)
+   if (rcp  .eq.  "RCP85") then
+
+      time               = new( 1032+900+240, double)
+      time@units         = "days since 1920-01-01 00:00:00"
+      time@calendar      = "noleap"
+      time@bounds        = "time_bounds"
+      time!0             = "time"
+
+      n_ens = 30
+      nens = n_ens
+
+      nt00 = (/    0,       1032,     900+1032 /)
+      nt01 = (/ 1032, 1032 + 900, 1032+900+240 /) - 1
+      nt   = (/ 1032,        900 ,         240 /)
+
+      part1 = (/ "b.e11.B20TRC5CNBDRD.f09_g16.",  \
+                 "b.e11.BRCP85C5CNBDRD.f09_g16.", \
+                 "b.e11.BRCP85C5CNBDRD.f09_g16." /)
+
+      part2 = sprinti("%0.3i", ispan(1,n_ens,1))
+
+      part3 = ".clm2.h0."
+
+      part5 = (/ ".192001-200512.nc",  \
+                 ".200601-208012.nc",  \
+                 ".208101-210012.nc"  /)
+
+      full_record = "CONUS_1920-2100"
 
 
+      time_of_last_month = "66065"; RCP8.5
 
-dir   =  "/projects/ECEP/CESM_Ensembles/CESM_LES_MES_ORIGINAL_OUTPUT/"
+      scratchfile = "./deleteme85.nc"
 
 
+   else
+
+      time               = new( 1032+900, double)
+      time@units         = "days since 1920-01-01 00:00:00"
+      time@calendar      = "noleap"
+      time@bounds        = "time_bounds"
+      time!0             = "time"
+
+      n_ens = 15
+      nens = n_ens
+
+      nt00 = (/    0,        1032 /)
+      nt01 = (/ 1032, 1032 +  900 /) - 1
+      nt   = (/ 1032,         900 /)
+
+      part1 = (/ "b.e11.B20TRC5CNBDRD.f09_g16.",  \
+                 "b.e11.BRCP45C5CNBDRD.f09_g16." /)
+
+      part2 = sprinti("%0.3i", ispan(1,n_ens,1))
+
+      part3 = ".clm2.h0."
+
+      part5 = (/ ".192001-200512.nc",  \
+                 ".200601-208012.nc"  /)
+
+      full_record = "CONUS_1920-2080"
+
+      time_of_last_month = "58765"; RCP4.5
+
+      scratchfile = "./deleteme45.nc"
+
+   end if
 
 
-n_timefiles = dimsizes(part5)
-n_ens       = dimsizes(part2)
-nt00 = (/    0,       1032,     900+1032 /)
-nt01 = (/ 1032, 1032 + 900, 1032+900+240 /) -1
-nt   = (/ 1032,        900 ,         240 /)
+   ensemble_member = ispan(1,nens,1)
+   ensemble_member!0 = "ensemble_member"
+   ensemble_member&ensemble_member= ispan(1,nens,1)
+
 
 
 
@@ -314,14 +424,7 @@ vf = 0
 
 
 
-time               = new( 1032+900+240, double)
-time@units         = "days since 1920-01-01 00:00:00"
-time@calendar      = "noleap"
-time@bounds        = "time_bounds"
-time!0             = "time"
-
-
-
+n_timefiles = dimsizes(nt00)
 
 
 do tf = 0,n_timefiles-1
@@ -391,7 +494,7 @@ do tf = 0,n_timefiles-1
 
 end do
 
-    time@calendar      = "noleap"
+time@calendar      = "noleap"
 
 time = (/ time -1 /)
 time&time = time
@@ -409,6 +512,7 @@ delta_t@long_name = "time of period"
 
     filename = "/projects/ECEP/CESM_Ensembles/CESM_LES_MES_ORIGINAL_OUTPUT/TSA/b.e11.B20TRC5CNBDRD.f09_g16.001.clm2.h0.TSA.185001-200512.nc"
 
+    print(" ens01 "+filename)
 
     f = addfile(filename,"r")
     time_ens1 = f->time
@@ -428,7 +532,7 @@ delta_t@long_name = "time of period"
     filename = "/projects/ECEP/CESM_Ensembles/CESM_LES_MES_ORIGINAL_OUTPUT/TSA/b.e11.B20TRC5CNBDRD.f09_g16.002.clm2.h0.TSA.192001-200512.nc"
 
 
-
+     print(" ens02 "+filename)
     f = addfile(filename,"r")
     time_ens2 = f->time
     time_ens2(:) =  time_ens2(:) -1
@@ -516,7 +620,7 @@ fsds@coordinates   = "time lat lon" ;
 
 q2m = temperature
 q2m@long_name = "2-m Mixing Ratio"
-q2m@units     = "kg3 kg-3"
+q2m@units     = "kg kg-1"
 q2m@coordinates   = "time lat lon" ;
 
 
@@ -543,9 +647,50 @@ firearea@units     = "grid fraction"
 firearea@coordinates   = "time lat lon" ;
 
 
+mslp = temperature
+mslp@long_name = "Mean Sea Level Pressure"
+mslp@units     = "Pa"
+mslp@coordinates   = "time lat lon" ;
+
+
+soil_evap = temperature
+soil_evap@long_name = "Soil Evaporation"
+soil_evap@units     = "kg m-3 s-1"
+soil_evap@coordinates   = "time lat lon" ;
+
+
+veg_evap = temperature
+veg_evap@long_name = "Canopy Evaporation"
+veg_evap@units     = "kg m-3 s-1"
+veg_evap@coordinates   = "time lat lon" ;
+
+
+veg_trans = temperature
+veg_trans@long_name = "Canopy Transpiration"
+veg_trans@units     = "kg m-3 s-1"
+veg_trans@coordinates   = "time lat lon" ;
+
+
+tref_mean = temperature
+tref_mean@long_name = "Mean CAM Ref Temperature"
+tref_mean@units     = "K"
+tref_mean@coordinates   = "time lat lon" ;
+
+
+tref_max = temperature
+tref_max@long_name = "Mean Max CAM Ref Temperature"
+tref_max@units     = "K"
+tref_max@coordinates   = "time lat lon" ;
+
+
+tref_min = temperature
+tref_min@long_name = "Mean Min CAM Ref Temperature"
+tref_min@units     = "K"
+tref_min@coordinates   = "time lat lon" ;
 
 
 
+print("openwks")
 wksT =  gsn_open_wks ("pdf","./"+loc_string(statid)+"/"+loc_string(statid)+"."+part1(1)+"TSA")
 wksW =  gsn_open_wks ("pdf","./"+loc_string(statid)+"/"+loc_string(statid)+"."+part1(1)+"WIND")
 wksR =  gsn_open_wks ("pdf","./"+loc_string(statid)+"/"+loc_string(statid)+"."+part1(1)+"RAIN")
@@ -560,6 +705,7 @@ wksFIRESEAONL =  gsn_open_wks ("pdf","./"+loc_string(statid)+"/"+loc_string(stat
 wksANN_FAREA_BURNED = gsn_open_wks ("pdf","./"+loc_string(statid)+"/"+loc_string(statid)+"."+part1(1)+"ANN_FAREA_BURNED")
 wksQ2M = gsn_open_wks ("pdf","./"+loc_string(statid)+"/"+loc_string(statid)+"."+part1(1)+"Q2M")
 wksPREC = gsn_open_wks ("pdf","./"+loc_string(statid)+"/"+loc_string(statid)+"."+part1(1)+"PREC")
+print("doneopenwks")
 
 tplots = new( n_ens, graphic)
 wplots = tplots
@@ -603,8 +749,8 @@ do tf = 0,n_timefiles-1
        tsa0 = tsa
     end if
     flds(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
-    flds@cesm_lon = tsa@lon
-    flds@cesm_lat = tsa@lat
+    flds@cesm_lon := tsa@lon
+    flds@cesm_lat := tsa@lat
 
 
     filename = dir + "/"+"Q2M"+"/"+part1(tf)+part2(ef)+".clm2.h0."+"Q2M"+string_year
@@ -618,8 +764,8 @@ do tf = 0,n_timefiles-1
        tsa0 = tsa
     end if
     q2m(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
-    q2m@cesm_lon = tsa@lon
-    q2m@cesm_lat = tsa@lat
+    q2m@cesm_lon := tsa@lon
+    q2m@cesm_lat := tsa@lat
 
 
 
@@ -634,8 +780,8 @@ do tf = 0,n_timefiles-1
        tsa0 = tsa
     end if
         fsds(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
-    fsds@cesm_lon = tsa@lon
-    fsds@cesm_lat = tsa@lat
+    fsds@cesm_lon := tsa@lon
+    fsds@cesm_lat := tsa@lat
 
 
     filename = dir + "/"+"SOILLIQ"+"/"+part1(tf)+part2(ef)+".clm2.h0."+"SOILLIQ"+string_year
@@ -653,8 +799,8 @@ do tf = 0,n_timefiles-1
        tsa0 = tsa2
     end if
     soilw(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
-    soilw@cesm_lon = tsa@lon
-    soilw@cesm_lat = tsa@lat
+    soilw@cesm_lon := tsa@lon
+    soilw@cesm_lat := tsa@lat
      delete(tsa)
      delete(tsa2)
      delete(tsa0)
@@ -672,8 +818,8 @@ do tf = 0,n_timefiles-1
        tsa0 = tsa
     end if
     temperature(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
-    temperature@cesm_lon = tsa@lon
-    temperature@cesm_lat = tsa@lat
+    temperature@cesm_lon := tsa@lon
+    temperature@cesm_lat := tsa@lat
 
 
     filename = dir + "/"+"WIND"+"/"+part1(tf)+part2(ef)+".clm2.h0."+"WIND"+string_year
@@ -687,8 +833,8 @@ do tf = 0,n_timefiles-1
        tsa0 = tsa
     end if
     wind(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
-    wind@cesm_lon = tsa@lon
-    wind@cesm_lat = tsa@lat
+    wind@cesm_lon := tsa@lon
+    wind@cesm_lat := tsa@lat
 
     filename = dir + "/"+"RAIN"+"/"+part1(tf)+part2(ef)+".clm2.h0."+"RAIN"+string_year
     print(" "+filename)
@@ -701,8 +847,8 @@ do tf = 0,n_timefiles-1
        tsa0 = tsa
     end if
     rain(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
-    rain@cesm_lon = tsa@lon
-    rain@cesm_lat = tsa@lat
+    rain@cesm_lon := tsa@lon
+    rain@cesm_lat := tsa@lat
 
 
 
@@ -717,9 +863,10 @@ do tf = 0,n_timefiles-1
        tsa0 = tsa
     end if
     firearea(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
-    rain@cesm_lon = tsa@lon
-    rain@cesm_lat = tsa@lat
-
+    rain@cesm_lon := tsa@lon
+    rain@cesm_lat := tsa@lat
+    delete(tsa0)
+    delete(tsa)
 
 
     filename = dir + "/"+"ZWT"+"/"+part1(tf)+part2(ef)+".clm2.h0."+"ZWT"+string_year
@@ -733,8 +880,8 @@ do tf = 0,n_timefiles-1
        tsa0 = tsa
     end if
     zwt(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
-    zwt@cesm_lon = tsa@lon
-    zwt@cesm_lat = tsa@lat
+    zwt@cesm_lon := tsa@lon
+    zwt@cesm_lat := tsa@lat
 
 
 
@@ -749,16 +896,17 @@ do tf = 0,n_timefiles-1
        tsa0 = tsa
     end if
     snow(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
-    snow@cesm_lon = tsa@lon
-    snow@cesm_lat = tsa@lat
+    snow@cesm_lon := tsa@lon
+    snow@cesm_lat := tsa@lat
 
 
 
     print(" " + precip@long_name)
     precip(ef,nt00(tf):nt01(tf)) = (/ rain(ef,nt00(tf):nt01(tf)) + snow(ef,nt00(tf):nt01(tf)) /)
-    precip@cesm_lon = tsa@lon
-    precip@cesm_lat = tsa@lat
-
+    precip@cesm_lon := tsa@lon
+    precip@cesm_lat := tsa@lat
+    delete(tsa0)
+    delete(tsa)
 
     filename = dir + "/"+"FIRESEASONL"+"/"+part1(tf)+part2(ef)+".clm2.h0."+"FIRESEASONL"+string_year
     print(" "+filename)
@@ -771,17 +919,144 @@ do tf = 0,n_timefiles-1
        tsa0 = tsa
     end if
     firelength(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
-    firelength@cesm_lon = tsa@lon
-    firelength@cesm_lat = tsa@lat
+    firelength@cesm_lon := tsa@lon
+    firelength@cesm_lat := tsa@lat
+    delete(tsa0)
+    delete(tsa)
+;
+
+    filename = dir + "/"+"PSL"+"/"+part1(tf)+part2(ef)+".cam.h0."+"PSL"+string_year
+    print(" "+filename)
+    f = addfile(filename,"r")
+    tsa = f->PSL(:,{loc_lat(statid)},{loc_lon(statid)})
+    print(" " + tsa@long_name)
+    if (longone) then
+       tsa0 = tsa(tens_1_on_2_a:tens_1_on_2_b)
+    else
+       tsa0 = tsa
+    end if
+    mslp(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
+    mslp@cesm_lon := tsa@lon
+    mslp@cesm_lat := tsa@lat
+
+;
 
 
+    filename = dir + "/"+"QSOIL"+"/"+part1(tf)+part2(ef)+".clm2.h0."+"QSOIL"+string_year
+    print(" "+filename)
+    f = addfile(filename,"r")
+    tsa = f->QSOIL(:,{loc_lat(statid)},{loc_lon(statid)})
+    print(" " + tsa@long_name)
+    if (longone) then
+       tsa0 = tsa(tens_1_on_2_a:tens_1_on_2_b)
+    else
+       tsa0 = tsa
+    end if
+    soil_evap(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
+    soil_evap@cesm_lon := tsa@lon
+    soil_evap@cesm_lat := tsa@lat
+    delete(tsa0)
+    delete(tsa)
+;
 
+    filename = dir + "/"+"QVEGE"+"/"+part1(tf)+part2(ef)+".clm2.h0."+"QVEGE"+string_year
+    print(" "+filename)
+    f = addfile(filename,"r")
+    tsa = f->QVEGE(:,{loc_lat(statid)},{loc_lon(statid)})
+    print(" " + tsa@long_name)
+    if (longone) then
+       tsa0 = tsa(tens_1_on_2_a:tens_1_on_2_b)
+    else
+       tsa0 = tsa
+    end if
+    veg_evap(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
+    veg_evap@cesm_lon := tsa@lon
+    veg_evap@cesm_lat := tsa@lat
+    delete(tsa0)
+    delete(tsa)
+;
 
-
+    filename = dir + "/"+"QVEGT"+"/"+part1(tf)+part2(ef)+".clm2.h0."+"QVEGT"+string_year
+    print(" "+filename)
+    f = addfile(filename,"r")
+    tsa = f->QVEGT(:,{loc_lat(statid)},{loc_lon(statid)})
+    print(" " + tsa@long_name)
+    if (longone) then
+       tsa0 = tsa(tens_1_on_2_a:tens_1_on_2_b)
+    else
+       tsa0 = tsa
+    end if
+    veg_trans(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
+    veg_trans@cesm_lon := tsa@lon
+    veg_trans@cesm_lat := tsa@lat
 
 
     delete(tsa0)
     delete(tsa)
+
+
+
+;
+
+
+    filename = dir + "/"+"TREFHTMN"+"/"+part1(tf)+part2(ef)+".cam.h0."+"TREFHTMN"+string_year
+    print(" "+filename)
+    f = addfile(filename,"r")
+    tsa = f->TREFHTMN(:,{loc_lat(statid)},{loc_lon(statid)})
+    print(" " + tsa@long_name)
+    if (longone) then
+       tsa0 = tsa(tens_1_on_2_a:tens_1_on_2_b)
+    else
+       tsa0 = tsa
+    end if
+    veg_trans(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
+    veg_trans@cesm_lon := tsa@lon
+    veg_trans@cesm_lat := tsa@lat
+
+
+    delete(tsa0)
+    delete(tsa)
+
+;
+
+    filename = dir + "/"+"TREFHTMX"+"/"+part1(tf)+part2(ef)+".cam.h0."+"TREFHTMX"+string_year
+    print(" "+filename)
+    f = addfile(filename,"r")
+    tsa = f->TREFHTMX(:,{loc_lat(statid)},{loc_lon(statid)})
+    print(" " + tsa@long_name)
+    if (longone) then
+       tsa0 = tsa(tens_1_on_2_a:tens_1_on_2_b)
+    else
+       tsa0 = tsa
+    end if
+    veg_trans(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
+    veg_trans@cesm_lon := tsa@lon
+    veg_trans@cesm_lat := tsa@lat
+
+
+    delete(tsa0)
+    delete(tsa)
+
+;
+
+    filename = dir + "/"+"TREFHT"+"/"+part1(tf)+part2(ef)+".cam.h0."+"TREFHT"+string_year
+    print(" "+filename)
+    f = addfile(filename,"r")
+    tsa = f->TREFHT(:,{loc_lat(statid)},{loc_lon(statid)})
+    print(" " + tsa@long_name)
+    if (longone) then
+       tsa0 = tsa(tens_1_on_2_a:tens_1_on_2_b)
+    else
+       tsa0 = tsa
+    end if
+    veg_trans(ef,nt00(tf):nt01(tf)) = (/ tsa0 /)
+    veg_trans@cesm_lon := tsa@lon
+    veg_trans@cesm_lat := tsa@lat
+
+
+    delete(tsa0)
+    delete(tsa)
+
 end do
 
 
@@ -1033,41 +1308,50 @@ distance = gc_latlon(loc_lat(statid),loc_lon(statid),cesm_lat,cesm_lon,1,4)
   system("rm -frv "+"./"+loc_string(statid)+"/"+loc_string(statid)+"."+part1(1)+"nc")
   fout =    addfile("./"+loc_string(statid)+"/"+loc_string(statid)+"."+part1(1)+"nc", "c")
 
-  fout@location = loc_string(statid)
-  fout@longitude = loc_lon(statid)
-  fout@latitude = loc_lat(statid)
-  fout@scenariocode_20th = part1(0)
-  fout@scenariocode_future = part1(1)
-  fout@cesm_area = cesm_area
-  fout@cesm_topo = cesm_topo
-  fout@cesm_lon = cesm_lon
-  fout@cesm_lat = cesm_lat
-  fout@station_id =loc_string(statid)
-  fout@great_circle_distance_error_in_km =  distance
-  fout->lon = cesm_lon
-  fout->lat =cesm_lat
-  fout->station_name =station_name
-  fout->alt = cesm_topo
+  fout@location                          = loc_string(statid)
+  fout@longitude                         = loc_lon(statid)
+  fout@latitude                          = loc_lat(statid)
+  fout@scenariocode_20th                 = part1(0)
+  fout@scenariocode_future               = part1(1)
+  fout@cesm_area                         = cesm_area
+  fout@cesm_topo                         = cesm_topo
+  fout@cesm_lon                          = cesm_lon
+  fout@cesm_lat                          = cesm_lat
+  fout@station_id                        = loc_string(statid)
+  fout@great_circle_distance_error_in_km = distance
+  fout->lon                              = cesm_lon
+  fout->lat                              = cesm_lat
+  fout->station_name                     = station_name
+  fout->alt                              = cesm_topo
 
-  fout->time  = time
-  fout->time_year  = time_year
-  fout->ensemble_member = ensemble_member
-   fout->saturation_soil_water_content = thetas
+  fout->time                          = time
+  fout->time_year                     = time_year
+  fout->ensemble_member               = ensemble_member
+  fout->saturation_soil_water_content = thetas
+  fout->soil_layer_thickness          = dzsoil
 
   fout->flds         = flds
   fout->fsds         = fsds
-  fout->temperature = temperature
+  fout->temperature  = temperature
   fout->q2m          = q2m
-  fout->wind        = wind
-  fout->precip      = precip
-  fout->rain        = rain
-  fout->snow        = snow
+  fout->wind         = wind
+  fout->precip       = precip
+  fout->rain         = rain
+  fout->snow         = snow
 
   fout->soilw        = soilw
   fout->zwt          = zwt
 
   fout->firelength   = firelength
   fout->firearea     = firearea
+
+  fout->mslp         = mslp
+  fout->soil_evap    = soil_evap
+  fout->veg_evap     = veg_evap
+  fout->veg_trans    = veg_trans
+  fout->tref_mean    = tref_mean
+  fout->tref_max     = tref_max
+  fout->tref_min     = tref_min
 
   delete(fout)
 
